@@ -3,6 +3,7 @@
 Resize, optimize, and encode images for vision LLM APIs -- with provider-specific token estimation and ready-to-use content blocks for OpenAI, Anthropic, and Gemini.
 
 [![npm version](https://img.shields.io/npm/v/vision-prep.svg)](https://www.npmjs.com/package/vision-prep)
+[![npm downloads](https://img.shields.io/npm/dt/vision-prep.svg)](https://www.npmjs.com/package/vision-prep)
 [![license](https://img.shields.io/npm/l/vision-prep.svg)](https://github.com/SiluPanda/vision-prep/blob/master/LICENSE)
 [![node](https://img.shields.io/node/v/vision-prep.svg)](https://nodejs.org)
 [![types](https://img.shields.io/npm/types/vision-prep.svg)](https://www.npmjs.com/package/vision-prep)
