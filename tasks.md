@@ -16,23 +16,23 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ## Phase 2: Types and Error Definitions
 
-- [ ] **Define ImageSource type** -- Create `src/types.ts` with the `ImageSource` union type: `string | Buffer | Uint8Array`. | Status: not_done
-- [ ] **Define Provider type** -- Add `Provider` type as `'openai' | 'anthropic' | 'gemini'`. | Status: not_done
-- [ ] **Define ImageMimeType type** -- Add `ImageMimeType` type covering `'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'image/bmp'`. | Status: not_done
-- [ ] **Define PrepareOptions interface** -- Add the `PrepareOptions` interface with all fields: `detail`, `quality`, `format`, `preferWebp`, `maxWidth`, `maxHeight`, `model`, `stripMetadata`, `backend`, `fetchTimeout`, `signal`. Include JSDoc comments and defaults per spec. | Status: not_done
-- [ ] **Define OpenAIPrepareOptions interface** -- Add `OpenAIPrepareOptions` extending `PrepareOptions` with the `detail` field. | Status: not_done
-- [ ] **Define EstimateOptions interface** -- Add `EstimateOptions` with `detail` and `model` fields. | Status: not_done
-- [ ] **Define BatchPrepareOptions interface** -- Add `BatchPrepareOptions` extending `PrepareOptions` with `concurrency` and `continueOnError` fields. | Status: not_done
-- [ ] **Define PreparerConfig interface** -- Add `PreparerConfig` extending `PrepareOptions` with required `provider` field. | Status: not_done
-- [ ] **Define PreparedImage interface** -- Add the `PreparedImage` interface with all fields: `base64`, `mimeType`, `width`, `height`, `tokens`, `cost`, `bytes`, `original` (nested object with `width`, `height`, `bytes`, `mimeType`), `contentBlock`, `provider`, `detail`. | Status: not_done
-- [ ] **Define TokenEstimate interface** -- Add `TokenEstimate` with `tokens`, `cost`, `width`, `height`, `provider`. | Status: not_done
-- [ ] **Define BatchResult interface** -- Add `BatchResult` with `images`, `totalTokens`, `totalCost`, `totalOriginalBytes`, `totalOptimizedBytes`, `succeeded`, `failed`. | Status: not_done
-- [ ] **Define BatchError interface** -- Add `BatchError` with `index` and `error` (nested `code` and `message`). | Status: not_done
-- [ ] **Define OpenAIContentBlock interface** -- Add with `type: 'image_url'` and nested `image_url` object containing `url` and optional `detail`. | Status: not_done
-- [ ] **Define AnthropicContentBlock interface** -- Add with `type: 'image'` and nested `source` object containing `type: 'base64'`, `media_type`, `data`. | Status: not_done
-- [ ] **Define GeminiContentBlock interface** -- Add with `inlineData` object containing `mimeType` and `data`. | Status: not_done
-- [ ] **Define ImagePreparer interface** -- Add with `prepare`, `prepareBatch`, and `estimateTokens` methods. | Status: not_done
-- [ ] **Export all types** -- Export all types from `src/types.ts` using `export type {}`. | Status: not_done
+- [x] **Define ImageSource type** -- Create `src/types.ts` with the `ImageSource` union type: `string | Buffer | Uint8Array`. | Status: done
+- [x] **Define Provider type** -- Add `Provider` type as `'openai' | 'anthropic' | 'gemini'`. | Status: done
+- [x] **Define ImageMimeType type** -- Add `ImageMimeType` type covering `'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'image/bmp'`. | Status: done
+- [x] **Define PrepareOptions interface** -- Add the `PrepareOptions` interface with all fields: `detail`, `quality`, `format`, `preferWebp`, `maxWidth`, `maxHeight`, `model`, `stripMetadata`, `backend`, `fetchTimeout`, `signal`. Include JSDoc comments and defaults per spec. | Status: done
+- [x] **Define OpenAIPrepareOptions interface** -- Add `OpenAIPrepareOptions` extending `PrepareOptions` with the `detail` field. | Status: done
+- [x] **Define EstimateOptions interface** -- Add `EstimateOptions` with `detail` and `model` fields. | Status: done
+- [x] **Define BatchPrepareOptions interface** -- Add `BatchPrepareOptions` extending `PrepareOptions` with `concurrency` and `continueOnError` fields. | Status: done
+- [x] **Define PreparerConfig interface** -- Add `PreparerConfig` extending `PrepareOptions` with required `provider` field. | Status: done
+- [x] **Define PreparedImage interface** -- Add the `PreparedImage` interface with all fields: `base64`, `mimeType`, `width`, `height`, `tokens`, `cost`, `bytes`, `original` (nested object with `width`, `height`, `bytes`, `mimeType`), `contentBlock`, `provider`, `detail`. | Status: done
+- [x] **Define TokenEstimate interface** -- Add `TokenEstimate` with `tokens`, `cost`, `width`, `height`, `provider`. | Status: done
+- [x] **Define BatchResult interface** -- Add `BatchResult` with `images`, `totalTokens`, `totalCost`, `totalOriginalBytes`, `totalOptimizedBytes`, `succeeded`, `failed`. | Status: done
+- [x] **Define BatchError interface** -- Add `BatchError` with `index` and `error` (nested `code` and `message`). | Status: done
+- [x] **Define OpenAIContentBlock interface** -- Add with `type: 'image_url'` and nested `image_url` object containing `url` and optional `detail`. | Status: done
+- [x] **Define AnthropicContentBlock interface** -- Add with `type: 'image'` and nested `source` object containing `type: 'base64'`, `media_type`, `data`. | Status: done
+- [x] **Define GeminiContentBlock interface** -- Add with `inlineData` object containing `mimeType` and `data`. | Status: done
+- [x] **Define ImagePreparer interface** -- Add with `prepare`, `prepareBatch`, and `estimateTokens` methods. | Status: done
+- [x] **Export all types** -- Export all types from `src/types.ts` using `export type {}`. | Status: done
 - [ ] **Create error classes** -- Create `src/errors.ts` with custom error classes: `ImageNotFoundError`, `InvalidImageError`, `ImageTooLargeError`, `UnsupportedProviderError`, `InvalidBase64Error`, `ImageFetchError`. Each should extend `Error` with a descriptive `code` property and `name` set to the class name. | Status: not_done
 
 ---
@@ -41,27 +41,27 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### OpenAI Provider (`src/providers/openai.ts`)
 
-- [ ] **Implement OpenAI low-detail resize** -- Implement `resizeForOpenAILow(width, height)` that fits the image within 512x512, preserving aspect ratio, never upscaling. Return `(width, height)` unchanged if already fits. | Status: not_done
-- [ ] **Implement OpenAI high-detail resize** -- Implement `resizeForOpenAIHigh(width, height)`: Step 1 constrains to 2048x2048; Step 2 scales shortest side to at most 768px. Never upscale. Use `Math.round` for dimension calculations. | Status: not_done
-- [ ] **Implement OpenAI token estimation** -- Implement tile-based formula: low detail returns flat 85; high detail computes `ceil(w/512) * ceil(h/512) * 170 + 85` after resize. Handle `auto` detail mode (treat as high). | Status: not_done
-- [ ] **Implement OpenAI content block formatter** -- Generate `{ type: 'image_url', image_url: { url: 'data:{mimeType};base64,{data}', detail } }`. The `url` field must include the full data URL prefix. | Status: not_done
+- [x] **Implement OpenAI low-detail resize** -- Implement `resizeForOpenAILow(width, height)` that fits the image within 512x512, preserving aspect ratio, never upscaling. Return `(width, height)` unchanged if already fits. | Status: done
+- [x] **Implement OpenAI high-detail resize** -- Implement `resizeForOpenAIHigh(width, height)`: Step 1 constrains to 2048x2048; Step 2 scales shortest side to at most 768px. Never upscale. Use `Math.round` for dimension calculations. | Status: done
+- [x] **Implement OpenAI token estimation** -- Implement tile-based formula: low detail returns flat 85; high detail computes `ceil(w/512) * ceil(h/512) * 170 + 85` after resize. Handle `auto` detail mode (treat as high). | Status: done
+- [x] **Implement OpenAI content block formatter** -- Generate `{ type: 'image_url', image_url: { url: 'data:{mimeType};base64,{data}', detail } }`. The `url` field must include the full data URL prefix. | Status: done
 
 ### Anthropic Provider (`src/providers/anthropic.ts`)
 
-- [ ] **Implement Anthropic resize** -- Implement `resizeForAnthropic(width, height)`: Step 1 constrains longest side to 1568px; Step 2 constrains total pixel count to 1,568,000. Use `Math.sqrt` for pixel count scaling. Never upscale. | Status: not_done
-- [ ] **Implement Anthropic token estimation** -- Implement `ceil(width * height / 750)` formula applied after resize dimensions are calculated. | Status: not_done
-- [ ] **Implement Anthropic content block formatter** -- Generate `{ type: 'image', source: { type: 'base64', media_type: '{mimeType}', data: '{base64}' } }`. The `data` field is raw base64 without any prefix. The `media_type` must be the full MIME type string. | Status: not_done
+- [x] **Implement Anthropic resize** -- Implement `resizeForAnthropic(width, height)`: Step 1 constrains longest side to 1568px; Step 2 constrains total pixel count to 1,568,000. Use `Math.sqrt` for pixel count scaling. Never upscale. | Status: done
+- [x] **Implement Anthropic token estimation** -- Implement `ceil(width * height / 750)` formula applied after resize dimensions are calculated. | Status: done
+- [x] **Implement Anthropic content block formatter** -- Generate `{ type: 'image', source: { type: 'base64', media_type: '{mimeType}', data: '{base64}' } }`. The `data` field is raw base64 without any prefix. The `media_type` must be the full MIME type string. | Status: done
 
 ### Gemini Provider (`src/providers/gemini.ts`)
 
-- [ ] **Implement Gemini resize** -- Implement `resizeForGemini(width, height)` that fits the image within 3600x3600, preserving aspect ratio. Never upscale. | Status: not_done
-- [ ] **Implement Gemini token estimation** -- Return flat 258 tokens regardless of dimensions. | Status: not_done
-- [ ] **Implement Gemini content block formatter** -- Generate `{ inlineData: { mimeType: '{mimeType}', data: '{base64}' } }`. The `data` field is raw base64 without prefix. | Status: not_done
+- [x] **Implement Gemini resize** -- Implement `resizeForGemini(width, height)` that fits the image within 3600x3600, preserving aspect ratio. Never upscale. | Status: done
+- [x] **Implement Gemini token estimation** -- Return flat 258 tokens regardless of dimensions. | Status: done
+- [x] **Implement Gemini content block formatter** -- Generate `{ inlineData: { mimeType: '{mimeType}', data: '{base64}' } }`. The `data` field is raw base64 without prefix. | Status: done
 
 ### Provider Registry
 
-- [ ] **Create provider lookup** -- Implement a function/map that returns the correct resize, token estimation, and content block functions for a given `Provider` string. Throw `UnsupportedProviderError` for unknown providers. | Status: not_done
-- [ ] **Define provider constraints** -- Create a constants/config for each provider: max file size (OpenAI 20MB, Anthropic 5MB, Gemini 20MB), max dimensions, supported formats. | Status: not_done
+- [x] **Create provider lookup** -- Implement a function/map that returns the correct resize, token estimation, and content block functions for a given `Provider` string. Throw `UnsupportedProviderError` for unknown providers. | Status: done
+- [x] **Define provider constraints** -- Create a constants/config for each provider: max file size (OpenAI 20MB, Anthropic 5MB, Gemini 20MB), max dimensions, supported formats. | Status: done
 
 ---
 
@@ -69,17 +69,17 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### Step 1: Read Image (`src/pipeline/read.ts`)
 
-- [ ] **Detect image source type from string** -- Implement string inspection logic: `http://`/`https://` prefix = URL; `data:` prefix = base64 data URL; base64-valid characters with length > 260 = raw base64; everything else = file path. | Status: not_done
-- [ ] **Read image from file path** -- Use `fs.readFile()` to read the file. Throw `ImageNotFoundError` if file does not exist. | Status: not_done
-- [ ] **Read image from URL** -- Use `fetch()` to download the image. Follow redirects. Validate response is 2xx and has image content type. Respect configurable timeout (default 30s). Support `AbortSignal` for cancellation. Throw `ImageFetchError` on failure. | Status: not_done
-- [ ] **Read image from Buffer/Uint8Array** -- Accept and use as-is without any transformation. | Status: not_done
-- [ ] **Read image from base64 string** -- Strip data URL prefix (`data:image/...;base64,`) if present. Decode base64 to Buffer. Throw `InvalidBase64Error` if decoding fails. Parse MIME type from data URL prefix when available. | Status: not_done
+- [x] **Detect image source type from string** -- Implement string inspection logic: `http://`/`https://` prefix = URL; `data:` prefix = base64 data URL; base64-valid characters with length > 260 = raw base64; everything else = file path. | Status: done
+- [x] **Read image from file path** -- Use `fs.readFile()` to read the file. Throw `ImageNotFoundError` if file does not exist. | Status: done
+- [x] **Read image from URL** -- Use `fetch()` to download the image. Follow redirects. Validate response is 2xx and has image content type. Respect configurable timeout (default 30s). Support `AbortSignal` for cancellation. Throw `ImageFetchError` on failure. | Status: done
+- [x] **Read image from Buffer/Uint8Array** -- Accept and use as-is without any transformation. | Status: done
+- [x] **Read image from base64 string** -- Strip data URL prefix (`data:image/...;base64,`) if present. Decode base64 to Buffer. Throw `InvalidBase64Error` if decoding fails. Parse MIME type from data URL prefix when available. | Status: done
 
 ### Step 2: Detect Format and Dimensions (`src/pipeline/detect.ts`)
 
-- [ ] **Detect image format from magic bytes** -- Implement magic byte inspection for JPEG (FF D8 FF), PNG (89 50 4E 47), GIF (47 49 46 38), WebP (52 49 46 46 ... 57 45 42 50), BMP (42 4D). Detect format from buffer header, not file extension. | Status: not_done
-- [ ] **Extract image dimensions** -- Use the image processing backend's metadata function (e.g., `sharp(buffer).metadata()`) to extract width and height without fully decoding the image. | Status: not_done
-- [ ] **Validate format for provider** -- Check if the detected format is supported by the target provider. Mark for conversion if not (e.g., BMP on OpenAI/Anthropic). Throw `InvalidImageError` for corrupted or unreadable images. | Status: not_done
+- [x] **Detect image format from magic bytes** -- Implement magic byte inspection for JPEG (FF D8 FF), PNG (89 50 4E 47), GIF (47 49 46 38), WebP (52 49 46 46 ... 57 45 42 50), BMP (42 4D). Detect format from buffer header, not file extension. | Status: done
+- [x] **Extract image dimensions** -- Use the image processing backend's metadata function (e.g., `sharp(buffer).metadata()`) to extract width and height without fully decoding the image. | Status: done
+- [x] **Validate format for provider** -- Check if the detected format is supported by the target provider. Mark for conversion if not (e.g., BMP on OpenAI/Anthropic). Throw `InvalidImageError` for corrupted or unreadable images. | Status: done
 
 ### Step 3: Resize (`src/pipeline/resize.ts`)
 
@@ -101,11 +101,11 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### Step 5: Encode (`src/pipeline/encode.ts`)
 
-- [ ] **Base64 encode** -- Convert optimized image Buffer to base64 string using `buffer.toString('base64')`. Return raw base64 (no data URL prefix). | Status: not_done
+- [x] **Base64 encode** -- Convert optimized image Buffer to base64 string using `buffer.toString('base64')`. Return raw base64 (no data URL prefix). | Status: done
 
 ### Step 6: Token Cost Estimation (`src/pipeline/tokens.ts`)
 
-- [ ] **Dispatch to provider token formula** -- Route to the correct provider's token estimation function based on the `Provider` value. Pass final resized dimensions (after Step 3). | Status: not_done
+- [x] **Dispatch to provider token formula** -- Route to the correct provider's token estimation function based on the `Provider` value. Pass final resized dimensions (after Step 3). | Status: done
 - [ ] **Implement dollar cost calculation** -- When a model identifier is provided, look up input pricing from `model-price-registry` (optional dependency). Calculate `cost = tokens / 1_000_000 * inputPricePerMTok`. Return `undefined` for cost if registry is not installed or model not found. | Status: not_done
 - [ ] **Handle model-price-registry absence gracefully** -- Use dynamic `require`/`import` with try/catch. When absent, log a warning (not an error) and set `cost` to `undefined`. | Status: not_done
 
@@ -115,31 +115,31 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### `prepare()` (`src/prepare.ts`)
 
-- [ ] **Implement prepare() function** -- Orchestrate the full seven-step pipeline: read, detect, resize, optimize, encode, estimate tokens, assemble PreparedImage. Accept `ImageSource`, `Provider`, and optional `PrepareOptions`. Return `Promise<PreparedImage>`. | Status: not_done
-- [ ] **Assemble PreparedImage result** -- Populate all fields: `base64`, `mimeType`, `width`, `height`, `tokens`, `cost`, `bytes`, `original` (original dimensions and byte size), `contentBlock` (formatted for provider), `provider`, `detail` (OpenAI only). | Status: not_done
-- [ ] **Implement prepareForOpenAI()** -- Convenience wrapper calling `prepare(image, 'openai', options)`. Accept `OpenAIPrepareOptions`. | Status: not_done
-- [ ] **Implement prepareForAnthropic()** -- Convenience wrapper calling `prepare(image, 'anthropic', options)`. | Status: not_done
-- [ ] **Implement prepareForGemini()** -- Convenience wrapper calling `prepare(image, 'gemini', options)`. | Status: not_done
+- [x] **Implement prepare() function** -- Orchestrate the full seven-step pipeline: read, detect, resize, optimize, encode, estimate tokens, assemble PreparedImage. Accept `ImageSource`, `Provider`, and optional `PrepareOptions`. Return `Promise<PreparedImage>`. | Status: done
+- [x] **Assemble PreparedImage result** -- Populate all fields: `base64`, `mimeType`, `width`, `height`, `tokens`, `cost`, `bytes`, `original` (original dimensions and byte size), `contentBlock` (formatted for provider), `provider`, `detail` (OpenAI only). | Status: done
+- [x] **Implement prepareForOpenAI()** -- Convenience wrapper calling `prepare(image, 'openai', options)`. Accept `OpenAIPrepareOptions`. | Status: done
+- [x] **Implement prepareForAnthropic()** -- Convenience wrapper calling `prepare(image, 'anthropic', options)`. | Status: done
+- [x] **Implement prepareForGemini()** -- Convenience wrapper calling `prepare(image, 'gemini', options)`. | Status: done
 
 ### `estimateTokens()` (`src/estimate.ts`)
 
-- [ ] **Implement estimateTokens() with dimensions input** -- Accept `{ width, height }` object directly. Calculate provider resize dimensions and token count without reading/processing an image. Return `TokenEstimate`. | Status: not_done
-- [ ] **Implement estimateTokens() with image source input** -- Accept `ImageSource`, read the image to extract dimensions (using detect step only), then calculate token count. Return `TokenEstimate`. | Status: not_done
-- [ ] **Support EstimateOptions** -- Handle `detail` (for OpenAI) and `model` (for dollar cost estimation) options. | Status: not_done
+- [x] **Implement estimateTokens() with dimensions input** -- Accept `{ width, height }` object directly. Calculate provider resize dimensions and token count without reading/processing an image. Return `TokenEstimate`. | Status: done
+- [x] **Implement estimateTokens() with image source input** -- Accept `ImageSource`, read the image to extract dimensions (using detect step only), then calculate token count. Return `TokenEstimate`. | Status: done
+- [x] **Support EstimateOptions** -- Handle `detail` (for OpenAI) and `model` (for dollar cost estimation) options. | Status: done
 
 ### `prepareBatch()` (`src/batch.ts`)
 
-- [ ] **Implement prepareBatch()** -- Process an array of `ImageSource` items in parallel. Use a semaphore pattern to enforce the `concurrency` limit (default 4). Return `BatchResult`. | Status: not_done
-- [ ] **Aggregate batch statistics** -- Calculate `totalTokens`, `totalCost`, `totalOriginalBytes`, `totalOptimizedBytes`, `succeeded`, `failed` across all results. | Status: not_done
-- [ ] **Implement continueOnError behavior** -- When `continueOnError: false` (default), reject the promise on first failure. When `true`, catch individual errors, record them as `BatchError` objects, and continue processing remaining images. | Status: not_done
-- [ ] **Preserve result order** -- Return results in the same order as the input array, regardless of processing order. | Status: not_done
+- [x] **Implement prepareBatch()** -- Process an array of `ImageSource` items in parallel. Use a semaphore pattern to enforce the `concurrency` limit (default 4). Return `BatchResult`. | Status: done
+- [x] **Aggregate batch statistics** -- Calculate `totalTokens`, `totalCost`, `totalOriginalBytes`, `totalOptimizedBytes`, `succeeded`, `failed` across all results. | Status: done
+- [x] **Implement continueOnError behavior** -- When `continueOnError: false` (default), reject the promise on first failure. When `true`, catch individual errors, record them as `BatchError` objects, and continue processing remaining images. | Status: done
+- [x] **Preserve result order** -- Return results in the same order as the input array, regardless of processing order. | Status: done
 
 ### `createPreparer()` (`src/factory.ts`)
 
-- [ ] **Implement createPreparer()** -- Accept `PreparerConfig` (which includes `provider` and all `PrepareOptions` fields). Return an `ImagePreparer` object. | Status: not_done
-- [ ] **Implement ImagePreparer.prepare()** -- Merge pre-configured options with per-call options (per-call overrides pre-configured). Call the underlying `prepare()` function with the merged options and pre-configured provider. | Status: not_done
-- [ ] **Implement ImagePreparer.prepareBatch()** -- Merge pre-configured options with per-call batch options. Call the underlying `prepareBatch()`. | Status: not_done
-- [ ] **Implement ImagePreparer.estimateTokens()** -- Merge pre-configured options with per-call estimate options. Call the underlying `estimateTokens()`. | Status: not_done
+- [x] **Implement createPreparer()** -- Accept `PreparerConfig` (which includes `provider` and all `PrepareOptions` fields). Return an `ImagePreparer` object. | Status: done
+- [x] **Implement ImagePreparer.prepare()** -- Merge pre-configured options with per-call options (per-call overrides pre-configured). Call the underlying `prepare()` function with the merged options and pre-configured provider. | Status: done
+- [x] **Implement ImagePreparer.prepareBatch()** -- Merge pre-configured options with per-call batch options. Call the underlying `prepareBatch()`. | Status: done
+- [x] **Implement ImagePreparer.estimateTokens()** -- Merge pre-configured options with per-call estimate options. Call the underlying `estimateTokens()`. | Status: done
 
 ---
 
@@ -202,8 +202,8 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ## Phase 8: Public API Exports
 
-- [ ] **Set up index.ts exports** -- Export all public API functions from `src/index.ts`: `prepare`, `prepareForOpenAI`, `prepareForAnthropic`, `prepareForGemini`, `estimateTokens`, `prepareBatch`, `createPreparer`. | Status: not_done
-- [ ] **Export all types** -- Re-export all type definitions from `src/types.ts` via `src/index.ts`. | Status: not_done
+- [x] **Set up index.ts exports** -- Export all public API functions from `src/index.ts`: `prepare`, `prepareForOpenAI`, `prepareForAnthropic`, `prepareForGemini`, `estimateTokens`, `prepareBatch`, `createPreparer`. | Status: done
+- [x] **Export all types** -- Re-export all type definitions from `src/types.ts` via `src/index.ts`. | Status: done
 - [ ] **Export error classes** -- Re-export all custom error classes from `src/errors.ts` via `src/index.ts`. | Status: not_done
 
 ---
@@ -212,55 +212,55 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### Image Source Detection Tests (`src/__tests__/read.test.ts`)
 
-- [ ] **Test file path detection** -- Verify absolute paths, relative paths, and paths with spaces are correctly identified as file paths. | Status: not_done
-- [ ] **Test URL detection** -- Verify strings starting with `http://` and `https://` are correctly identified as URLs. | Status: not_done
-- [ ] **Test data URL detection** -- Verify strings starting with `data:image/` are correctly identified as base64 data URLs. | Status: not_done
-- [ ] **Test raw base64 detection** -- Verify long base64 strings (length > 260) without prefix are correctly identified as raw base64. | Status: not_done
-- [ ] **Test short strings treated as file paths** -- Verify short strings that look like base64 are treated as file paths, not base64. | Status: not_done
-- [ ] **Test Buffer and Uint8Array acceptance** -- Verify Buffer and Uint8Array inputs are accepted without detection logic. | Status: not_done
-- [ ] **Test file not found error** -- Verify `ImageNotFoundError` is thrown for non-existent file paths. | Status: not_done
+- [x] **Test file path detection** -- Verify absolute paths, relative paths, and paths with spaces are correctly identified as file paths. | Status: done
+- [x] **Test URL detection** -- Verify strings starting with `http://` and `https://` are correctly identified as URLs. | Status: done
+- [x] **Test data URL detection** -- Verify strings starting with `data:image/` are correctly identified as base64 data URLs. | Status: done
+- [x] **Test raw base64 detection** -- Verify long base64 strings (length > 260) without prefix are correctly identified as raw base64. | Status: done
+- [x] **Test short strings treated as file paths** -- Verify short strings that look like base64 are treated as file paths, not base64. | Status: done
+- [x] **Test Buffer and Uint8Array acceptance** -- Verify Buffer and Uint8Array inputs are accepted without detection logic. | Status: done
+- [x] **Test file not found error** -- Verify `ImageNotFoundError` is thrown for non-existent file paths. | Status: done
 - [ ] **Test invalid base64 error** -- Verify `InvalidBase64Error` is thrown for invalid base64 strings. | Status: not_done
 
 ### Resize Calculation Tests (`src/__tests__/resize.test.ts`)
 
-- [ ] **Test OpenAI low detail resize** -- Verify various input sizes produce dimensions within 512x512. Test edge cases: exactly 512x512, smaller than 512x512, much larger. | Status: not_done
-- [ ] **Test OpenAI high detail resize -- 4000x3000** -- Verify produces 1024x768 (per spec worked example). | Status: not_done
-- [ ] **Test OpenAI high detail resize -- 1920x1080** -- Verify produces 1365x768 (per spec token table). | Status: not_done
-- [ ] **Test OpenAI high detail resize -- 800x600** -- Verify passes through unchanged (both dimensions within bounds). | Status: not_done
-- [ ] **Test OpenAI high detail resize -- 256x256** -- Verify passes through unchanged (no upscale). | Status: not_done
-- [ ] **Test Anthropic resize -- 4000x3000** -- Verify triggers both longest-side and pixel-count constraints. Final dimensions ~1446x1084 (per spec). | Status: not_done
+- [x] **Test OpenAI low detail resize** -- Verify various input sizes produce dimensions within 512x512. Test edge cases: exactly 512x512, smaller than 512x512, much larger. | Status: done
+- [x] **Test OpenAI high detail resize -- 4000x3000** -- Verify produces 1024x768 (per spec worked example). | Status: done
+- [x] **Test OpenAI high detail resize -- 1920x1080** -- Verify produces 1365x768 (per spec token table). | Status: done
+- [x] **Test OpenAI high detail resize -- 800x600** -- Verify passes through unchanged (both dimensions within bounds). | Status: done
+- [x] **Test OpenAI high detail resize -- 256x256** -- Verify passes through unchanged (no upscale). | Status: done
+- [x] **Test Anthropic resize -- 4000x3000** -- Verify triggers both longest-side and pixel-count constraints. Final dimensions ~1446x1084 (per spec). | Status: done
 - [ ] **Test Anthropic resize -- 1920x1080** -- Verify triggers longest-side constraint only. Result ~1568x882. | Status: not_done
-- [ ] **Test Anthropic resize -- 1024x768** -- Verify passes through unchanged. | Status: not_done
+- [x] **Test Anthropic resize -- 1024x768** -- Verify passes through unchanged. | Status: done
 - [ ] **Test Gemini resize -- 4000x3000** -- Verify resizes to 3600x2700. | Status: not_done
 - [ ] **Test Gemini resize -- 3000x2000** -- Verify passes through unchanged. | Status: not_done
 - [ ] **Test aspect ratio preservation** -- Verify aspect ratio is preserved within 1px rounding for all providers and all test dimensions. | Status: not_done
 - [ ] **Test no-upscale invariant** -- Verify images smaller than target dimensions are never upscaled for all providers. | Status: not_done
-- [ ] **Test custom maxWidth/maxHeight** -- Verify custom dimensions override provider defaults but provider ceiling still applies (e.g., maxWidth: 4000 on Anthropic still caps at 1568). | Status: not_done
+- [x] **Test custom maxWidth/maxHeight** -- Verify custom dimensions override provider defaults but provider ceiling still applies (e.g., maxWidth: 4000 on Anthropic still caps at 1568). | Status: done
 
 ### Token Estimation Tests (`src/__tests__/tokens.test.ts`)
 
-- [ ] **Test OpenAI low detail -- flat 85** -- Verify any dimensions return 85 tokens. | Status: not_done
-- [ ] **Test OpenAI high detail -- 512x512** -- Verify 1x1 tile = 255 tokens. | Status: not_done
-- [ ] **Test OpenAI high detail -- 1024x768** -- Verify 2x2 tiles = 765 tokens. | Status: not_done
-- [ ] **Test OpenAI high detail -- 1920x1080** -- Verify after resize to 1365x768, 3x2 tiles = 1105 tokens. | Status: not_done
-- [ ] **Test OpenAI high detail -- 4000x3000** -- Verify after resize to 1024x768, 2x2 tiles = 765 tokens. | Status: not_done
-- [ ] **Test OpenAI high detail -- 800x600** -- Verify 2x2 tiles = 765 tokens (no resize needed). | Status: not_done
-- [ ] **Test OpenAI high detail -- 256x256** -- Verify 1x1 tile = 255 tokens. | Status: not_done
-- [ ] **Test Anthropic -- 256x256** -- Verify 88 tokens. | Status: not_done
-- [ ] **Test Anthropic -- 1024x768** -- Verify 1049 tokens. | Status: not_done
-- [ ] **Test Anthropic -- 1920x1080** -- Verify 1844 tokens (after resize). | Status: not_done
+- [x] **Test OpenAI low detail -- flat 85** -- Verify any dimensions return 85 tokens. | Status: done
+- [x] **Test OpenAI high detail -- 512x512** -- Verify 1x1 tile = 255 tokens. | Status: done
+- [x] **Test OpenAI high detail -- 1024x768** -- Verify 2x2 tiles = 765 tokens. | Status: done
+- [x] **Test OpenAI high detail -- 1920x1080** -- Verify after resize to 1365x768, 3x2 tiles = 1105 tokens. | Status: done
+- [x] **Test OpenAI high detail -- 4000x3000** -- Verify after resize to 1024x768, 2x2 tiles = 765 tokens. | Status: done
+- [x] **Test OpenAI high detail -- 800x600** -- Verify 2x2 tiles = 765 tokens (no resize needed). | Status: done
+- [x] **Test OpenAI high detail -- 256x256** -- Verify 1x1 tile = 255 tokens. | Status: done
+- [x] **Test Anthropic -- 256x256** -- Verify 88 tokens. | Status: done
+- [x] **Test Anthropic -- 1024x768** -- Verify 1049 tokens. | Status: done
+- [x] **Test Anthropic -- 1920x1080** -- Verify 1844 tokens (after resize). | Status: done
 - [ ] **Test Anthropic -- 4000x3000** -- Verify 2090 tokens (after resize, pixel-capped). | Status: not_done
 - [ ] **Test Anthropic -- 1568x1000** -- Verify 2091 tokens. | Status: not_done
-- [ ] **Test Gemini -- any dimensions** -- Verify flat 258 tokens for various dimensions. | Status: not_done
+- [x] **Test Gemini -- any dimensions** -- Verify flat 258 tokens for various dimensions. | Status: done
 - [ ] **Test dollar cost calculation** -- Verify correct USD cost when model pricing is available (e.g., gpt-4o at $2.50/MTok: 765 tokens = $0.001913). | Status: not_done
-- [ ] **Test dollar cost undefined without model-price-registry** -- Verify cost is `undefined` when the registry is not installed. | Status: not_done
+- [x] **Test dollar cost undefined without model-price-registry** -- Verify cost is `undefined` when the registry is not installed. | Status: done
 
 ### Content Block Format Tests (`src/__tests__/content-block.test.ts`)
 
-- [ ] **Test OpenAI content block structure** -- Verify `{ type: 'image_url', image_url: { url: 'data:{mimeType};base64,...', detail } }` format. Verify data URL prefix is included. | Status: not_done
-- [ ] **Test Anthropic content block structure** -- Verify `{ type: 'image', source: { type: 'base64', media_type: '{mimeType}', data: '{rawBase64}' } }` format. Verify no data URL prefix in `data` field. Verify `media_type` is full MIME type. | Status: not_done
-- [ ] **Test Gemini content block structure** -- Verify `{ inlineData: { mimeType: '{mimeType}', data: '{rawBase64}' } }` format. Verify no data URL prefix. | Status: not_done
-- [ ] **Test MIME type accuracy** -- Verify the MIME type in the content block matches the actual encoded format (e.g., JPEG input produces `image/jpeg`). | Status: not_done
+- [x] **Test OpenAI content block structure** -- Verify `{ type: 'image_url', image_url: { url: 'data:{mimeType};base64,...', detail } }` format. Verify data URL prefix is included. | Status: done
+- [x] **Test Anthropic content block structure** -- Verify `{ type: 'image', source: { type: 'base64', media_type: '{mimeType}', data: '{rawBase64}' } }` format. Verify no data URL prefix in `data` field. Verify `media_type` is full MIME type. | Status: done
+- [x] **Test Gemini content block structure** -- Verify `{ inlineData: { mimeType: '{mimeType}', data: '{rawBase64}' } }` format. Verify no data URL prefix. | Status: done
+- [x] **Test MIME type accuracy** -- Verify the MIME type in the content block matches the actual encoded format (e.g., JPEG input produces `image/jpeg`). | Status: done
 
 ### Optimization Tests (`src/__tests__/optimize.test.ts`)
 
@@ -275,19 +275,19 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ### Batch Processing Tests (`src/__tests__/batch.test.ts`)
 
-- [ ] **Test all images processed** -- Verify all images in a batch are processed and returned. | Status: not_done
-- [ ] **Test result order preservation** -- Verify results are returned in the same order as inputs. | Status: not_done
-- [ ] **Test totalTokens aggregation** -- Verify `totalTokens` is the sum of individual `tokens` values. | Status: not_done
-- [ ] **Test concurrency limiting** -- Verify `concurrency` option limits the number of parallel operations. | Status: not_done
-- [ ] **Test continueOnError: true** -- Verify remaining images are processed when one fails. Failed images reported as `BatchError`. | Status: not_done
-- [ ] **Test continueOnError: false** -- Verify processing stops on first failure. | Status: not_done
-- [ ] **Test failed image error reporting** -- Verify `BatchError` includes correct `index`, `code`, and `message`. | Status: not_done
+- [x] **Test all images processed** -- Verify all images in a batch are processed and returned. | Status: done
+- [x] **Test result order preservation** -- Verify results are returned in the same order as inputs. | Status: done
+- [x] **Test totalTokens aggregation** -- Verify `totalTokens` is the sum of individual `tokens` values. | Status: done
+- [x] **Test concurrency limiting** -- Verify `concurrency` option limits the number of parallel operations. | Status: done
+- [x] **Test continueOnError: true** -- Verify remaining images are processed when one fails. Failed images reported as `BatchError`. | Status: done
+- [x] **Test continueOnError: false** -- Verify processing stops on first failure. | Status: done
+- [x] **Test failed image error reporting** -- Verify `BatchError` includes correct `index`, `code`, and `message`. | Status: done
 
 ### Factory Tests (`src/__tests__/factory.test.ts`)
 
-- [ ] **Test createPreparer returns ImagePreparer** -- Verify the returned object has `prepare`, `prepareBatch`, and `estimateTokens` methods. | Status: not_done
-- [ ] **Test pre-configured options are applied** -- Verify the factory's config (provider, quality, detail, etc.) is used when no per-call options are provided. | Status: not_done
-- [ ] **Test per-call options override pre-configured** -- Verify per-call options take precedence over factory config. | Status: not_done
+- [x] **Test createPreparer returns ImagePreparer** -- Verify the returned object has `prepare`, `prepareBatch`, and `estimateTokens` methods. | Status: done
+- [x] **Test pre-configured options are applied** -- Verify the factory's config (provider, quality, detail, etc.) is used when no per-call options are provided. | Status: done
+- [x] **Test per-call options override pre-configured** -- Verify per-call options take precedence over factory config. | Status: done
 
 ### Error Handling Tests
 
@@ -315,7 +315,7 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 ## Phase 11: Edge Case Tests
 
-- [ ] **Test 1x1 pixel image** -- Verify correct handling for all providers. | Status: not_done
+- [x] **Test 1x1 pixel image** -- Verify correct handling for all providers. | Status: done
 - [ ] **Test extreme aspect ratio (10000x10)** -- Verify resize and token calculation handle extreme wide images. | Status: not_done
 - [ ] **Test extreme aspect ratio (10x10000)** -- Verify resize and token calculation handle extreme tall images. | Status: not_done
 - [ ] **Test exact provider dimension limits** -- Test 2048x2048 for OpenAI, 1568x1568 for Anthropic, 3600x3600 for Gemini. Verify no unnecessary resize. | Status: not_done
@@ -354,7 +354,7 @@ This file tracks all implementation tasks derived from `SPEC.md`. Each task is g
 
 - [ ] **Create README.md** -- Write the package README with: overview, installation instructions (including sharp peer dependency), quick start examples, API reference for all exported functions, CLI usage with all commands/flags, provider comparison table, configuration defaults, and integration examples with monorepo packages. | Status: not_done
 - [ ] **Add JSDoc comments to all public functions** -- Document `prepare`, `prepareForOpenAI`, `prepareForAnthropic`, `prepareForGemini`, `estimateTokens`, `prepareBatch`, `createPreparer` with parameter descriptions, return types, examples, and thrown errors. | Status: not_done
-- [ ] **Add JSDoc comments to all type interfaces** -- Document all fields in `PrepareOptions`, `PreparedImage`, `TokenEstimate`, `BatchResult`, etc. with descriptions and defaults. | Status: not_done
+- [x] **Add JSDoc comments to all type interfaces** -- Document all fields in `PrepareOptions`, `PreparedImage`, `TokenEstimate`, `BatchResult`, etc. with descriptions and defaults. | Status: done
 - [ ] **Document error classes** -- Add JSDoc to each error class describing when it is thrown and what information it contains. | Status: not_done
 
 ---
