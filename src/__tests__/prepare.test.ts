@@ -222,6 +222,15 @@ describe('prepare', () => {
       const result = await prepare(buf, 'openai', { maxHeight: 400 });
       expect(result.height).toBeLessThanOrEqual(400);
     });
+
+    it('token estimate reflects custom dimensions, not original', async () => {
+      const buf = createMinimalPng(2000, 1500);
+      const unconstrained = await prepare(buf, 'openai', { detail: 'high' });
+      const constrained = await prepare(buf, 'openai', { detail: 'high', maxWidth: 500 });
+      // Constrained image is smaller, so it should use fewer tokens
+      expect(constrained.tokens).toBeLessThan(unconstrained.tokens);
+      expect(constrained.width).toBeLessThanOrEqual(500);
+    });
   });
 });
 
