@@ -1,6 +1,6 @@
 {
   "name": "vision-prep",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Resize and optimize images for vision LLM APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

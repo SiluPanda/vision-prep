@@ -176,10 +176,10 @@ export async function prepare(
   // Step 4: Encode to base64 (no actual resize without sharp/jimp)
   const base64 = buffer.toString('base64');
 
-  // Step 5: Estimate tokens
+  // Step 5: Estimate tokens (use effective dimensions after all constraints)
   const tokenEstimate = estimateTokensFromDimensions(
-    info.width,
-    info.height,
+    effectiveWidth,
+    effectiveHeight,
     provider,
     { detail, model: options?.model },
   );
